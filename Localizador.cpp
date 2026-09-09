@@ -35,9 +35,18 @@ int Localizador::executar(int argc, char **argv) {
 }
 
 bool Localizador::buscar() {
+    if (m_diretorio == "" || m_extensao == "") {
+        std::cerr << "Diretório ou extensão não especificados." << std::endl;
+        return false;
+    }
+    if (!fs::is_directory(m_diretorio)) {
+        std::cerr << m_diretorio << " não é um diretório válido." << std::endl;
+        return false;
+    }
     std::cout << "Buscando arquivos com extensão " << m_extensao << " em " << m_diretorio << std::endl;
     try {
-        for (const auto &entry: fs::recursive_directory_iterator(m_diretorio)) {
+        for (const auto &entry: fs::recursive_directory_iterator(m_diretorio,
+                                                                 fs::directory_options::skip_permission_denied)) {
             if (entry.is_regular_file() && entry.path().extension() == m_extensao) {
                 std::cout << entry.path().string() << std::endl;
             }
