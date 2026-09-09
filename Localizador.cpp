@@ -5,9 +5,11 @@
 #include "Localizador.h"
 
 #include <iostream>
+#include <filesystem>
 #include <boost/program_options.hpp>
 
 namespace po = boost::program_options;
+namespace fs = std::filesystem;
 
 int Localizador::executar(int argc, char **argv) {
     po::options_description desc("Opções disponíveis");
@@ -34,5 +36,15 @@ int Localizador::executar(int argc, char **argv) {
 
 bool Localizador::buscar() {
     std::cout << "Buscando arquivos com extensão " << m_extensao << " em " << m_diretorio << std::endl;
+    try {
+        for (const auto &entry: fs::recursive_directory_iterator(m_diretorio)) {
+            if (entry.is_regular_file() && entry.path().extension() == m_extensao) {
+                std::cout << entry.path().string() << std::endl;
+            }
+        }
+    } catch (fs::filesystem_error &e) {
+        std::cerr << e.what() << std::endl;
+        return false;
+    }
     return true;
 }
