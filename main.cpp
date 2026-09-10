@@ -5,7 +5,7 @@
 #include <windows.h>
 #endif
 
-int main() {
+int main(int argc, char **argv) {
 #if defined(_WIN32)
     SetConsoleCP(CP_UTF8);
     SetConsoleOutputCP(CP_UTF8);
@@ -13,5 +13,5 @@ int main() {
 
     std::cout << "Localizador de arquivos!" << std::endl;
     Localizador localizador;
-    return localizador.executar(__argc, __argv);
+    return localizador.executar(argc, argv);
 }
