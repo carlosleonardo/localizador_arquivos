@@ -17,9 +17,14 @@ int Localizador::executar(int argc, char **argv) {
             ("ajuda,a", "Esta ajuda")("extensao,e", po::value<std::string>(), "Extensão de arquivo a localizar");
 
     po::variables_map vm;
-    po::store(po::parse_command_line(argc, argv, desc), vm);
-    po::notify(vm);
-
+    try {
+        po::store(po::parse_command_line(argc, argv, desc), vm);
+        po::notify(vm);
+    } catch (const po::error &e) {
+        std::cerr << "Erro ao processar argumentos: " << e.what() << std::endl;
+        std::cout << desc << std::endl;
+        return EXIT_FAILURE;
+    }
     if (vm.count("ajuda") || !vm.count("dir") || !vm.count("extensao")) {
         std::cout << desc << std::endl;
         return 0;
@@ -35,7 +40,7 @@ int Localizador::executar(int argc, char **argv) {
 }
 
 bool Localizador::buscar() {
-    if (m_diretorio == "" || m_extensao == "") {
+    if (m_diretorio.empty() || m_extensao.empty()) {
         std::cerr << "Diretório ou extensão não especificados." << std::endl;
         return false;
     }
@@ -44,6 +49,7 @@ bool Localizador::buscar() {
         return false;
     }
     std::cout << "Buscando arquivos com extensão " << m_extensao << " em " << m_diretorio << std::endl;
+    m_extensao = (m_extensao[0] == '.') ? m_extensao : "." + m_extensao; // Garante que a extensão comece com '.'
     try {
         for (const auto &entry: fs::recursive_directory_iterator(m_diretorio,
                                                                  fs::directory_options::skip_permission_denied)) {
