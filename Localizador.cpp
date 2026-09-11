@@ -48,6 +48,7 @@ bool Localizador::buscar() {
         std::cerr << m_diretorio << " não é um diretório válido." << std::endl;
         return false;
     }
+    unsigned long totalArquivos = 0;
     std::cout << "Buscando arquivos com extensão " << m_extensao << " em " << m_diretorio << std::endl;
     m_extensao = (m_extensao[0] == '.') ? m_extensao : "." + m_extensao; // Garante que a extensão comece com '.'
     try {
@@ -55,11 +56,13 @@ bool Localizador::buscar() {
                                                                  fs::directory_options::skip_permission_denied)) {
             if (entry.is_regular_file() && entry.path().extension() == m_extensao) {
                 std::cout << entry.path().string() << std::endl;
+                ++totalArquivos;
             }
         }
     } catch (fs::filesystem_error &e) {
         std::cerr << e.what() << std::endl;
         return false;
     }
+    std::cout << "Total de arquivos encontrados: " << totalArquivos << std::endl;
     return true;
 }
