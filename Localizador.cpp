@@ -59,7 +59,7 @@ bool Localizador::buscar() {
                 ++totalArquivos;
             }
         }
-    } catch (fs::filesystem_error &e) {
+    } catch (const fs::filesystem_error &e) {
         std::cerr << e.what() << std::endl;
         return false;
     }
