@@ -11,7 +11,7 @@
 namespace po = boost::program_options;
 namespace fs = std::filesystem;
 
-int Localizador::executar(int argc, char **argv) {
+int Localizador::executar(const int argc, char **argv) {
     po::options_description desc("Opções disponíveis");
     desc.add_options()("dir,d", po::value<std::string>(), "Diretório a partir do qual localizar arquivos")
             ("ajuda,a", "Esta ajuda")("extensao,e", po::value<std::string>(), "Extensão de arquivo a localizar");
@@ -25,7 +25,7 @@ int Localizador::executar(int argc, char **argv) {
         std::cout << desc << std::endl;
         return EXIT_FAILURE;
     }
-    if (vm.count("ajuda") || !vm.count("dir") || !vm.count("extensao")) {
+    if (vm.contains("ajuda") || !vm.contains("dir") || !vm.contains("extensao")) {
         std::cout << desc << std::endl;
         return 0;
     }
